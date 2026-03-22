@@ -2,3 +2,6 @@ streamlit
 anthropic
 pydantic
 openpyxl
+pymupdf
+gspread
+google-auth
