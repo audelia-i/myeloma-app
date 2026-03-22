@@ -67,74 +67,85 @@ st.markdown("""
     .stRadio > div { flex-direction: column; }
     h1, h2, h3, h4, h5, h6 { direction: rtl; text-align: right; }
     [data-testid="stSidebar"] { direction: rtl; }
-    .stTabs [data-baseweb="tab-list"] { flex-direction: row-reverse; justify-content: flex-start; }
-    .stTabs [data-baseweb="tab"] { direction: rtl; }
-    [data-testid="stDateInput"] > div { flex-direction: row-reverse; }
-    [data-testid="stDateInput"] input { direction: rtl; text-align: right; }
-    /* ── פונט ── */
-    html, body, [class*="css"] { font-family: 'Segoe UI', Arial, sans-serif; }
-
-    /* ── כותרת ראשית ── */
-    h1 { font-size: 2rem; font-weight: 700; color: #1a3a5c; }
-
-    /* ── כותרות סעיפים ── */
-    h2 { font-size: 1.3rem; font-weight: 600; color: #1a3a5c;
-         border-bottom: 2px solid #e0e8f0; padding-bottom: 6px; margin-top: 2rem; }
-
-    /* ── כותרות משנה ── */
-    h3 { font-size: 1.05rem; font-weight: 600; color: #2c5f8a; }
-
-    /* ── כפתור ראשי ── */
-    .stButton > button[kind="primary"] {
-        background-color: #1a3a5c;
-        color: white;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        padding: 0.5rem 2rem;
-        border: none;
+    /* לשוניות RTL */
+    .stTabs [data-baseweb="tab-list"] {
+        flex-direction: row-reverse !important;
+        justify-content: flex-end !important;
     }
-    .stButton > button[kind="primary"]:hover { background-color: #2c5f8a; }
+    .stTabs [data-baseweb="tab"] { direction: rtl !important; }
 
-    /* ── כפתורים רגילים ── */
+    /* שדות תאריך RTL */
+    [data-testid="stDateInput"] input {
+        direction: rtl !important;
+        text-align: right !important;
+    }
+    [data-testid="stDateInput"] > div > div {
+        flex-direction: row-reverse !important;
+    }
+
+    /* צ'קבוקס - יישור */
+    .stCheckbox { text-align: right !important; direction: rtl !important; }
+    .stCheckbox label { flex-direction: row-reverse !important; gap: 8px !important; }
+    /* ── רקע ── */
+    [data-testid="stAppViewContainer"] { background-color: #eef1f7 !important; }
+    section[data-testid="stMain"] > div:first-child {
+        background-color: #ffffff !important;
+        border-radius: 14px !important;
+        padding: 2rem 2.5rem !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08) !important;
+        margin-top: 1rem !important;
+    }
+
+    /* ── כותרות ── */
+    h1 { color: #1a3567 !important; font-size: 1.9rem !important; font-weight: 700 !important; }
+    h2 { color: #1a3567 !important; font-size: 1.2rem !important; font-weight: 600 !important;
+         border-bottom: 2px solid #d4e1f7 !important;
+         padding-bottom: 5px !important; margin-top: 1.8rem !important; }
+    h3 { color: #1e5799 !important; font-size: 1rem !important; font-weight: 600 !important; }
+
+    /* ── כפתורים ── */
     .stButton > button {
-        border-radius: 8px;
-        font-weight: 500;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        border: 1.5px solid #1a3567 !important;
+        color: #1a3567 !important;
+        transition: all 0.2s !important;
     }
-
-    /* ── שדות קלט ── */
-    .stTextInput input, .stNumberInput input, .stDateInput input,
-    .stSelectbox > div, .stMultiSelect > div {
-        border-radius: 6px;
+    .stButton > button:hover {
+        background-color: #1a3567 !important;
+        color: white !important;
     }
+    [data-testid="baseButton-primary"] {
+        background-color: #1a3567 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+    }
+    [data-testid="baseButton-primary"]:hover { background-color: #1e5799 !important; }
 
     /* ── Metric cards ── */
     [data-testid="stMetric"] {
-        background-color: #f0f5fb;
-        border-radius: 10px;
-        padding: 10px 14px;
-        border: 1px solid #d0e0f0;
+        background-color: #f0f5ff !important;
+        border-radius: 10px !important;
+        padding: 12px 16px !important;
+        border: 1px solid #c5d8f5 !important;
     }
+    [data-testid="stMetricLabel"] { color: #1a3567 !important; font-weight: 600 !important; }
 
-    /* ── הפרדה בין סעיפים ── */
-    hr { border: none; border-top: 1px solid #e0e8f0; margin: 1.5rem 0; }
+    /* ── Tabs ── */
+    .stTabs [data-baseweb="tab-highlight"] { background-color: #1a3567 !important; }
+    .stTabs [aria-selected="true"] { color: #1a3567 !important; font-weight: 700 !important; }
 
-    /* ── תיבות התראה ── */
+    /* ── תיבות ── */
     .warning-box {
-        background-color: #fff8e6;
-        border: 1px solid #f0c040;
-        border-right: 4px solid #f0c040;
-        border-radius: 6px;
-        padding: 10px 14px;
-        margin: 10px 0;
+        background-color: #fff8e6; border: 1px solid #f0c040;
+        border-right: 4px solid #f0c040; border-radius: 6px;
+        padding: 10px 14px; margin: 10px 0;
     }
     .error-box {
-        background-color: #fff0f0;
-        border: 1px solid #e06060;
-        border-right: 4px solid #e06060;
-        border-radius: 6px;
-        padding: 10px 14px;
-        margin: 10px 0;
+        background-color: #fff0f0; border: 1px solid #e06060;
+        border-right: 4px solid #e06060; border-radius: 6px;
+        padding: 10px 14px; margin: 10px 0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -174,8 +185,40 @@ def calc_egfr(creatinine, age, gender):
     return round(egfr, 1)
 
 # ── כותרת ────────────────────────────────────────────────────────────────────
-st.title("🔬 התאמת מחקרים קליניים")
-st.subheader("מיאלומה נפוצה")
+st.markdown("""
+<div style="text-align:center; padding: 1.5rem 0 0.5rem;">
+  <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- תא פלסמה מסוגנן — ייצוג מיאלומה -->
+    <circle cx="36" cy="36" r="34" fill="#eef4ff" stroke="#1a3567" stroke-width="2"/>
+    <!-- גרעין -->
+    <circle cx="36" cy="36" r="16" fill="#1a3567" opacity="0.15"/>
+    <circle cx="36" cy="36" r="10" fill="#1a3567" opacity="0.35"/>
+    <circle cx="36" cy="36" r="5"  fill="#1a3567"/>
+    <!-- נקודות מייצגות תאים בסביבה -->
+    <circle cx="14" cy="24" r="4.5" fill="#1e5799" opacity="0.7"/>
+    <circle cx="58" cy="24" r="4.5" fill="#1e5799" opacity="0.7"/>
+    <circle cx="14" cy="48" r="4.5" fill="#1e5799" opacity="0.7"/>
+    <circle cx="58" cy="48" r="4.5" fill="#1e5799" opacity="0.7"/>
+    <circle cx="36" cy="10" r="4.5" fill="#1e5799" opacity="0.7"/>
+    <circle cx="36" cy="62" r="4.5" fill="#1e5799" opacity="0.7"/>
+    <!-- קווי חיבור -->
+    <line x1="36" y1="26" x2="36" y2="14" stroke="#1a3567" stroke-width="1" opacity="0.4"/>
+    <line x1="36" y1="46" x2="36" y2="58" stroke="#1a3567" stroke-width="1" opacity="0.4"/>
+    <line x1="26" y1="36" x2="18" y2="26" stroke="#1a3567" stroke-width="1" opacity="0.4"/>
+    <line x1="46" y1="36" x2="54" y2="26" stroke="#1a3567" stroke-width="1" opacity="0.4"/>
+    <line x1="26" y1="36" x2="18" y2="46" stroke="#1a3567" stroke-width="1" opacity="0.4"/>
+    <line x1="46" y1="36" x2="54" y2="46" stroke="#1a3567" stroke-width="1" opacity="0.4"/>
+  </svg>
+  <div style="margin-top:0.8rem;">
+    <span style="font-size:1.8rem; font-weight:700; color:#1a3567;">התאמת מחקרים קליניים</span><br>
+    <span style="font-size:1rem; color:#5a7ab5; font-weight:500; letter-spacing:0.03em;">מיאלומה נפוצה · Multiple Myeloma</span>
+  </div>
+  <div style="margin-top:0.6rem; font-size:0.82rem; color:#888;">
+    הכלי מיועד לשימוש רופאים בלבד. אין להציג פרטים מזהים של המטופל.
+  </div>
+</div>
+<hr style="border:none; border-top:1px solid #d4e1f7; margin:1rem 0 1.5rem;">
+""", unsafe_allow_html=True)
 st.caption("הכלי מיועד לשימוש רופאים בלבד. אין להזין פרטים מזהים של המטופל.")
 st.divider()
 
@@ -1155,3 +1198,11 @@ if submit:
             with st.expander(f"❌ לא מתאים ({len(ineligible)})"):
                 for e in ineligible:
                     _show_trial(e, show_fails=True)
+
+st.markdown("""
+<hr style="border:none; border-top:1px solid #d4e1f7; margin:2rem 0 1rem;">
+<div style="text-align:center; color:#999; font-size:0.8rem; padding-bottom:1rem;">
+    © 2025 · פותח על ידי פרופ' יעל כהן וד"ר אודליה אשל-פורר · כל הזכויות שמורות<br>
+    <span style="font-style:italic;">כלי זה מיועד לשימוש רפואי פנימי בלבד ואינו מהווה המלצה רפואית</span>
+</div>
+""", unsafe_allow_html=True)
