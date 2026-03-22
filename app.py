@@ -63,22 +63,77 @@ st.markdown("""
     }
     .stSelectbox label, .stMultiSelect label, .stNumberInput label,
     .stDateInput label, .stRadio label, .stCheckbox label { direction: rtl; }
+    .stDateInput input { direction: rtl; text-align: right; }
     .stRadio > div { flex-direction: column; }
     h1, h2, h3, h4, h5, h6 { direction: rtl; text-align: right; }
     [data-testid="stSidebar"] { direction: rtl; }
-    .stTabs [data-baseweb="tab-list"] { flex-direction: row-reverse; }
+    .stTabs [data-baseweb="tab-list"] { flex-direction: row-reverse; justify-content: flex-start; }
+    .stTabs [data-baseweb="tab"] { direction: rtl; }
+    [data-testid="stDateInput"] > div { flex-direction: row-reverse; }
+    [data-testid="stDateInput"] input { direction: rtl; text-align: right; }
+    /* ── פונט ── */
+    html, body, [class*="css"] { font-family: 'Segoe UI', Arial, sans-serif; }
+
+    /* ── כותרת ראשית ── */
+    h1 { font-size: 2rem; font-weight: 700; color: #1a3a5c; }
+
+    /* ── כותרות סעיפים ── */
+    h2 { font-size: 1.3rem; font-weight: 600; color: #1a3a5c;
+         border-bottom: 2px solid #e0e8f0; padding-bottom: 6px; margin-top: 2rem; }
+
+    /* ── כותרות משנה ── */
+    h3 { font-size: 1.05rem; font-weight: 600; color: #2c5f8a; }
+
+    /* ── כפתור ראשי ── */
+    .stButton > button[kind="primary"] {
+        background-color: #1a3a5c;
+        color: white;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.5rem 2rem;
+        border: none;
+    }
+    .stButton > button[kind="primary"]:hover { background-color: #2c5f8a; }
+
+    /* ── כפתורים רגילים ── */
+    .stButton > button {
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    /* ── שדות קלט ── */
+    .stTextInput input, .stNumberInput input, .stDateInput input,
+    .stSelectbox > div, .stMultiSelect > div {
+        border-radius: 6px;
+    }
+
+    /* ── Metric cards ── */
+    [data-testid="stMetric"] {
+        background-color: #f0f5fb;
+        border-radius: 10px;
+        padding: 10px 14px;
+        border: 1px solid #d0e0f0;
+    }
+
+    /* ── הפרדה בין סעיפים ── */
+    hr { border: none; border-top: 1px solid #e0e8f0; margin: 1.5rem 0; }
+
+    /* ── תיבות התראה ── */
     .warning-box {
-        background-color: #fff3cd;
-        border: 1px solid #ffc107;
-        border-radius: 5px;
-        padding: 10px;
+        background-color: #fff8e6;
+        border: 1px solid #f0c040;
+        border-right: 4px solid #f0c040;
+        border-radius: 6px;
+        padding: 10px 14px;
         margin: 10px 0;
     }
     .error-box {
-        background-color: #f8d7da;
-        border: 1px solid #dc3545;
-        border-radius: 5px;
-        padding: 10px;
+        background-color: #fff0f0;
+        border: 1px solid #e06060;
+        border-right: 4px solid #e06060;
+        border-radius: 6px;
+        padding: 10px 14px;
         margin: 10px 0;
     }
 </style>
@@ -951,8 +1006,6 @@ if not disease_class or disease_class == "":
     errors.append("חסר: סיווג המחלה")
 if not lab_date:
     errors.append("חסר: תאריך בדיקות")
-if not labs_available:
-    errors.append("חסר: האם בדיקות זמינות")
 
 if errors:
     for e in errors:
