@@ -213,13 +213,10 @@ st.markdown("""
     <span style="font-size:1.8rem; font-weight:700; color:#1a3567;">התאמת מחקרים קליניים</span><br>
     <span style="font-size:1rem; color:#5a7ab5; font-weight:500; letter-spacing:0.03em;">מיאלומה נפוצה · Multiple Myeloma</span>
   </div>
-  <div style="margin-top:0.6rem; font-size:0.82rem; color:#888;">
-    הכלי מיועד לשימוש רופאים בלבד. אין להציג פרטים מזהים של המטופל.
-  </div>
 </div>
 <hr style="border:none; border-top:1px solid #d4e1f7; margin:1rem 0 1.5rem;">
 """, unsafe_allow_html=True)
-st.caption("הכלי מיועד לשימוש רופאים בלבד. אין להזין פרטים מזהים של המטופל.")
+st.caption("כלי זה הינו כלי עזר בלבד ואינו מחליף ייעוץ רפואי. אין להעלות פרטים מזהים כגון שם, ת.ז, טלפון וכו'.")
 st.divider()
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -1203,6 +1200,6 @@ st.markdown("""
 <hr style="border:none; border-top:1px solid #d4e1f7; margin:2rem 0 1rem;">
 <div style="text-align:center; color:#999; font-size:0.8rem; padding-bottom:1rem;">
     © 2025 · פותח על ידי פרופ' יעל כהן וד"ר אודליה אשל-פורר · כל הזכויות שמורות<br>
-    <span style="font-style:italic;">כלי זה מיועד לשימוש רפואי פנימי בלבד ואינו מהווה המלצה רפואית</span>
+    <span style="font-style:italic;">כלי זה הינו כלי עזר בלבד ואינו מחליף ייעוץ רפואי. אין להעלות פרטים מזהים כגון שם, ת.ז, טלפון וכו'.</span>
 </div>
 """, unsafe_allow_html=True)
