@@ -5,6 +5,7 @@
 import base64
 import json
 import anthropic
+import fitz  # PyMuPDF
 from pydantic import BaseModel
 from typing import Optional
 
@@ -13,20 +14,14 @@ class LabValues(BaseModel):
     # ספירת דם
     hb: Optional[float] = None          # המוגלובין g/dL
     plt: Optional[float] = None         # טסיות ×10⁹/L
-    anc: Optional[float] = None         # נויטרופילים מוחלטים ×10⁹/L (אחרי חישוב מ-% אם צריך)
-    lymphocytes: Optional[float] = None # לימפוציטים מוחלטים ×10⁹/L (אחרי חישוב מ-% אם צריך)
+    anc: Optional[float] = None         # נויטרופילים מוחלטים ×10⁹/L
 
     # כימיה
     creatinine: Optional[float] = None  # קריאטינין mg/dL
-    calcium: Optional[float] = None     # סידן mg/dL
-    sodium: Optional[float] = None      # נתרן mEq/L
-    potassium: Optional[float] = None   # אשלגן mEq/L
 
     # כבד
     ast: Optional[float] = None         # IU/L
     alt: Optional[float] = None         # IU/L
-    alp: Optional[float] = None         # IU/L
-    ggt: Optional[float] = None         # IU/L
     bilirubin: Optional[float] = None   # בילירובין כולל mg/dL
 
     # פרופיל מיאלומה
@@ -34,9 +29,6 @@ class LabValues(BaseModel):
     m_protein_urine: Optional[float] = None   # שתן mg/24h
     kappa_flc: Optional[float] = None         # mg/L
     lambda_flc: Optional[float] = None        # mg/L
-
-    # הערות
-    notes: Optional[str] = None  # הערות חופשיות אם יש ממצאים חריגים/לא ברורים
 
 
 EXTRACTION_PROMPT = """אתה מומחה לפענוח בדיקות מעבדה רפואיות.
@@ -66,13 +58,7 @@ EXTRACTION_PROMPT = """אתה מומחה לפענוח בדיקות מעבדה ר
 - **אם מוצג כ-% בלבד (NEUT%):**
   - חפש גם WBC / כדוריות לבנות ×10³/µL
   - חשב: anc = WBC × (NEUT% / 100)
-  - אם אין WBC → השאר null והוסף הערה
-
-### לימפוציטים → lymphocytes (יחידות: ×10⁹/L — **מוחלטים**)
-- שמות: Lymphocytes (Abs) / לימפוציטים / LYMPH#
-- **אם מוצג כ-% בלבד (LYMPH%):**
-  - חשב: lymph = WBC × (LYMPH% / 100)
-  - אם אין WBC → השאר null והוסף הערה
+  - אם אין WBC → השאר null
 
 ---
 
@@ -84,28 +70,12 @@ EXTRACTION_PROMPT = """אתה מומחה לפענוח בדיקות מעבדה ר
 - µmol/L → חלק ב-88.4
 - mmol/L → כפל ב-11.31
 
-### סידן → calcium (יחידות: mg/dL)
-- שמות: Calcium / סידן / Ca / CAL
-- mg/dL → השאר כמו שהוא
-- mmol/L → כפל ב-4.008
-- mEq/L → כפל ב-2.004
-
-### נתרן → sodium (יחידות: mEq/L)
-- שמות: Sodium / נתרן / Na
-- mEq/L = mmol/L → השאר כמו שהוא
-
-### אשלגן → potassium (יחידות: mEq/L)
-- שמות: Potassium / אשלגן / K / KAL
-- mEq/L = mmol/L → השאר כמו שהוא
-
 ---
 
 ## תפקודי כבד (כולם IU/L = U/L — אותו ערך)
 
 - AST / SGOT / אספרטט → ast
 - ALT / SGPT / אלנין → alt
-- ALP / פוספטאז בסיסי / Alkaline Phosphatase → alp
-- GGT / גמא GT / γ-GT → ggt
 
 ### בילירובין כולל → bilirubin (יחידות: mg/dL)
 - שמות: Total Bilirubin / T.Bili / בילירובין כולל
@@ -142,11 +112,21 @@ EXTRACTION_PROMPT = """אתה מומחה לפענוח בדיקות מעבדה ר
 
 ## כללים סופיים
 1. אם ערך לא מופיע בתמונה → null (לא לנחש)
-2. אם ערך לא קריא / מטושטש → null + הוסף הערה ב-notes
-3. אם ביצעת המרת יחידות — ציין ב-notes (למשל: "קריאטינין המר מ-µmol/L")
-4. **החזר תמיד את הערך הסופי לאחר ההמרה**, לא את הערך המקורי
-5. אם יש ספק בזיהוי — null + הערה עדיף על ניחוש שגוי
+2. אם ערך לא קריא / מטושטש → null
+3. **החזר תמיד את הערך הסופי לאחר ההמרה**, לא את הערך המקורי
+4. אם יש ספק בזיהוי — null עדיף על ניחוש שגוי
 """
+
+
+def pdf_to_images(pdf_bytes: bytes) -> list[bytes]:
+    """ממיר PDF לרשימת תמונות PNG (דף אחד = תמונה אחת)."""
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    images = []
+    for page in doc:
+        pix = page.get_pixmap(dpi=150)
+        images.append(pix.tobytes("png"))
+    doc.close()
+    return images
 
 
 def extract_lab_values(image_bytes: bytes, api_key: str, mime_type: str = "image/jpeg") -> dict:

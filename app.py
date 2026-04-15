@@ -162,8 +162,8 @@ def load_trials():
 trials = load_trials()
 
 # ── אתחול session_state לערכי מעבדה ─────────────────────────────────────────
-LAB_FIELDS = ["hb", "plt", "anc", "lymphocytes", "creatinine", "calcium",
-              "sodium", "potassium", "ast", "alt", "alp", "ggt", "bilirubin",
+LAB_FIELDS = ["hb", "plt", "anc", "creatinine",
+              "ast", "alt", "bilirubin",
               "m_protein_serum", "m_protein_urine", "kappa_flc", "lambda_flc"]
 
 for f in LAB_FIELDS:
@@ -355,10 +355,10 @@ lab_files = st.file_uploader(
 )
 
 if lab_files:
-    st.info(f"📎 הועלו {len(lab_files)} קבצים — ניתן לחלץ ערכים אוטומטית")
+    st.info(f"📎 הועלו {len(lab_files)} קבצים")
     _api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
 
-    if st.button("🤖 חלץ ערכים אוטומטית מהקבצים", type="primary", use_container_width=True):
+    if st.button("חלץ ערכים", type="primary", use_container_width=True):
         if not _api_key:
             st.error("מפתח API לא מוגדר — פנה למנהל המערכת")
         else:
@@ -413,30 +413,20 @@ if lab_files:
                 st.info(f"**סה״כ {len(merged)} ערכים מולאו אוטומטית בטופס למטה ↓**")
 
 st.subheader("ספירת דם (CBC)")
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 with col1:
     hb = st.number_input("המוגלובין — Hb (g/dL)", min_value=0.0, max_value=20.0,
                          value=st.session_state.lab_hb, step=0.1, placeholder="g/dL", key="lab_hb")
+with col2:
     plt_val = st.number_input("טסיות — PLT (×10⁹/L)", min_value=0.0, max_value=1000.0,
                               value=st.session_state.lab_plt, step=1.0, placeholder="×10⁹/L", key="lab_plt")
-with col2:
+with col3:
     anc = st.number_input("נויטרופילים — ANC (×10⁹/L)", min_value=0.0, max_value=20.0,
                           value=st.session_state.lab_anc, step=0.1, placeholder="×10⁹/L", key="lab_anc")
-    lymph = st.number_input("לימפוציטים (×10⁹/L)", min_value=0.0, max_value=10.0,
-                            value=st.session_state.lab_lymphocytes, step=0.1, placeholder="×10⁹/L", key="lab_lymphocytes")
 
 st.subheader("כימיה")
-col1, col2 = st.columns(2)
-with col1:
-    creatinine = st.number_input("קריאטינין (mg/dL)", min_value=0.1, max_value=15.0,
-                                 value=st.session_state.lab_creatinine, step=0.1, placeholder="mg/dL", key="lab_creatinine")
-    calcium = st.number_input("סידן — Ca (mg/dL)", min_value=4.0, max_value=18.0,
-                              value=st.session_state.lab_calcium, step=0.1, placeholder="mg/dL", key="lab_calcium")
-with col2:
-    sodium = st.number_input("נתרן — Na (mEq/L)", min_value=110.0, max_value=165.0,
-                             value=st.session_state.lab_sodium, step=1.0, placeholder="mEq/L", key="lab_sodium")
-    potassium = st.number_input("אשלגן — K (mEq/L)", min_value=2.0, max_value=8.0,
-                                value=st.session_state.lab_potassium, step=0.1, placeholder="mEq/L", key="lab_potassium")
+creatinine = st.number_input("קריאטינין (mg/dL)", min_value=0.1, max_value=15.0,
+                             value=st.session_state.lab_creatinine, step=0.1, placeholder="mg/dL", key="lab_creatinine")
 
 # eGFR אוטומטי
 egfr = None
@@ -451,13 +441,9 @@ col1, col2, col3 = st.columns(3)
 with col1:
     ast = st.number_input("AST (IU/L)", min_value=0.0, max_value=500.0,
                           value=st.session_state.lab_ast, step=1.0, placeholder="IU/L", key="lab_ast")
+with col2:
     alt = st.number_input("ALT (IU/L)", min_value=0.0, max_value=500.0,
                           value=st.session_state.lab_alt, step=1.0, placeholder="IU/L", key="lab_alt")
-with col2:
-    alp = st.number_input("ALP (IU/L)", min_value=0.0, max_value=1000.0,
-                          value=st.session_state.lab_alp, step=1.0, placeholder="IU/L", key="lab_alp")
-    ggt = st.number_input("GGT (IU/L)", min_value=0.0, max_value=500.0,
-                          value=st.session_state.lab_ggt, step=1.0, placeholder="IU/L", key="lab_ggt")
 with col3:
     bilirubin = st.number_input("בילירובין כולל (mg/dL)", min_value=0.0, max_value=20.0,
                                 value=st.session_state.lab_bilirubin, step=0.1, placeholder="mg/dL", key="lab_bilirubin")
@@ -1109,10 +1095,9 @@ if submit:
         "hematologic_exclusions": hematologic_exclusions,
         "labs": {
             "date": str(lab_date) if lab_date else None,
-            "hb": hb, "plt": plt_val, "anc": anc, "lymphocytes": lymph,
+            "hb": hb, "plt": plt_val, "anc": anc,
             "creatinine": creatinine, "egfr": egfr,
-            "calcium": calcium, "sodium": sodium, "potassium": potassium,
-            "ast": ast, "alt": alt, "alp": alp, "ggt": ggt, "bilirubin": bilirubin,
+            "ast": ast, "alt": alt, "bilirubin": bilirubin,
             "m_protein_serum": m_protein_serum,
             "m_protein_urine": m_protein_urine,
             "kappa_flc": kappa_flc,
