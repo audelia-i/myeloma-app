@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap');
 
 /* ── Global ── */
-html, body, [data-testid="stAppViewContainer"] {
+html, body, .stApp, [data-testid="stAppViewContainer"] {
     font-family: 'Heebo', sans-serif !important;
-    background-color: #F8F9FA !important;
+    background-color: #F0F4F8 !important;
 }
 
 /* ── Main content card ── */
@@ -54,7 +54,7 @@ h3 { font-size: 0.95rem !important; font-weight: 600 !important; color: #2c4f8c 
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
-    background-color: #EEF2F8 !important;
+    background-color: #F0F4F8 !important;
     border-right: 1px solid #D4E1F7 !important;
 }
 
