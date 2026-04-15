@@ -1,0 +1,117 @@
+/* ── Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap');
+
+/* ── Global ── */
+html, body, [data-testid="stAppViewContainer"] {
+    font-family: 'Heebo', sans-serif !important;
+    background-color: #F8F9FA !important;
+}
+
+/* ── Main content card ── */
+section[data-testid="stMain"] > div:first-child {
+    background-color: #FFFFFF !important;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06) !important;
+    padding: 2.5rem 3rem !important;
+    margin: 1.5rem auto !important;
+}
+
+/* ── Typography ── */
+p, li, span { line-height: 1.7 !important; font-size: 0.95rem !important; }
+
+h1 { font-size: 2rem !important; font-weight: 700 !important; color: #1a3567 !important; }
+h2 { font-size: 1.15rem !important; font-weight: 600 !important; color: #1a3567 !important;
+     border-bottom: 2px solid #E8EEF8 !important; padding-bottom: 6px !important; margin-top: 2rem !important; }
+h3 { font-size: 0.95rem !important; font-weight: 600 !important; color: #2c4f8c !important; }
+
+/* ── Buttons ── */
+.stButton > button {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.2s ease !important;
+    border: 1.5px solid #1a3567 !important;
+    color: #1a3567 !important;
+    background-color: transparent !important;
+}
+.stButton > button:hover {
+    background-color: #1a3567 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(26,53,103,0.2) !important;
+    transform: translateY(-1px) !important;
+}
+[data-testid="baseButton-primary"] {
+    background-color: #1a3567 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+}
+[data-testid="baseButton-primary"]:hover {
+    background-color: #1e5799 !important;
+    box-shadow: 0 4px 14px rgba(26,53,103,0.3) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background-color: #EEF2F8 !important;
+    border-right: 1px solid #D4E1F7 !important;
+}
+
+/* ── Metric cards ── */
+[data-testid="stMetric"] {
+    background-color: #F0F5FF !important;
+    border-radius: 12px !important;
+    padding: 14px 18px !important;
+    border: 1px solid #C5D8F5 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
+}
+[data-testid="stMetricLabel"] { font-weight: 600 !important; color: #1a3567 !important; font-size: 0.85rem !important; }
+[data-testid="stMetricValue"] { font-weight: 700 !important; color: #1a3567 !important; }
+
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+    background-color: #F0F5FF !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
+}
+.stTabs [aria-selected="true"] {
+    background-color: #ffffff !important;
+    color: #1a3567 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1) !important;
+}
+.stTabs [data-baseweb="tab-highlight"] { background-color: transparent !important; }
+
+/* ── Inputs ── */
+.stNumberInput input, .stTextInput input {
+    border-radius: 8px !important;
+    border: 1px solid #D0DCF0 !important;
+    background-color: #FAFBFF !important;
+}
+
+/* ── Alerts & Expanders ── */
+.stAlert { border-radius: 10px !important; }
+.stExpander { border-radius: 10px !important; border: 1px solid #E0EAF8 !important; }
+
+/* ── Containers with border ── */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    border-radius: 12px !important;
+    border: 1px solid #E8EEF8 !important;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04) !important;
+}
+
+/* ── Custom boxes ── */
+.warning-box {
+    background-color: #FFF8E6; border: 1px solid #F0C040;
+    border-right: 4px solid #F0C040; border-radius: 8px;
+    padding: 12px 16px; margin: 10px 0; line-height: 1.6;
+}
+.error-box {
+    background-color: #FFF0F0; border: 1px solid #E06060;
+    border-right: 4px solid #E06060; border-radius: 8px;
+    padding: 12px 16px; margin: 10px 0; line-height: 1.6;
+}
+
+/* ── Spacing ── */
+.block-container { padding-top: 1.5rem !important; padding-bottom: 3rem !important; }
