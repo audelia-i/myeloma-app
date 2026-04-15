@@ -363,43 +363,54 @@ if lab_files:
             st.error("מפתח API לא מוגדר — פנה למנהל המערכת")
         else:
             merged = {}
-            all_notes = []
-            errors = []
             total_images = 0
+            any_error = False
 
-            with st.spinner("Claude קורא את בדיקות המעבדה... (5-15 שניות לכל קובץ)"):
-                for lab_file in lab_files:
-                    file_bytes = lab_file.read()
+            for lab_file in lab_files:
+                status_ph = st.empty()
+                status_ph.info(f"⏳ מעבד: **{lab_file.name}**...")
+                file_bytes = lab_file.read()
 
-                    if lab_file.type == "application/pdf":
-                        from lab_extractor import pdf_to_images
-                        images = [(img, "image/png") for img in pdf_to_images(file_bytes)]
+                if lab_file.type == "application/pdf":
+                    from lab_extractor import pdf_to_images
+                    images = [(img, "image/png") for img in pdf_to_images(file_bytes)]
+                else:
+                    images = [(file_bytes, lab_file.type)]
+
+                file_notes = []
+                file_errors = []
+                before = len(merged)
+
+                for img_bytes, mime in images:
+                    total_images += 1
+                    result = extract_lab_values(img_bytes, _api_key, mime)
+                    if result["success"]:
+                        for f in LAB_FIELDS:
+                            if result.get(f) is not None and f not in merged:
+                                merged[f] = float(result[f])
+                        if result.get("notes"):
+                            file_notes.append(result["notes"])
                     else:
-                        images = [(file_bytes, lab_file.type)]
+                        file_errors.append(result["error"])
 
-                    for img_bytes, mime in images:
-                        total_images += 1
-                        result = extract_lab_values(img_bytes, _api_key, mime)
-                        if result["success"]:
-                            for f in LAB_FIELDS:
-                                if result.get(f) is not None and f not in merged:
-                                    merged[f] = float(result[f])
-                            if result.get("notes"):
-                                all_notes.append(result["notes"])
-                        else:
-                            errors.append(f"{lab_file.name}: {result['error']}")
+                found = len(merged) - before
+                status_ph.empty()
 
-            filled = 0
+                if file_errors:
+                    any_error = True
+                    for err in file_errors:
+                        st.error(f"❌ **{lab_file.name}**: {err}")
+                elif found == 0:
+                    st.warning(f"⚠️ **{lab_file.name}**: לא זוהו ערכים בקובץ זה")
+                else:
+                    notes_str = f" · {' | '.join(file_notes)}" if file_notes else ""
+                    st.success(f"✅ **{lab_file.name}**: נמצאו {found} ערכים{notes_str}")
+
             for f, val in merged.items():
                 st.session_state[f"lab_{f}"] = val
-                filled += 1
 
-            st.success(f"✅ חולצו {filled} ערכים מ-{total_images} עמודים")
-            if all_notes:
-                st.warning("הערות: " + " | ".join(all_notes))
-            for err in errors:
-                st.error(f"❌ {err}")
-            st.rerun()
+            if merged:
+                st.info(f"**סה״כ {len(merged)} ערכים מולאו אוטומטית בטופס למטה ↓**")
 
 st.subheader("ספירת דם (CBC)")
 col1, col2 = st.columns(2)
