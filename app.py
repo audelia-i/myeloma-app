@@ -612,6 +612,15 @@ def _match_trial(trial: dict, patient: dict):
     act_cond   = patient.get("active_conditions", [])
     lot        = patient.get("lot_count", 0)
 
+    # 0. גיל
+    pt_age = patient.get("age")
+    min_age = e.get("min_age")
+    max_age = e.get("max_age")
+    if pt_age and min_age is not None and pt_age < min_age:
+        fails.append(f"גיל: נדרש לפחות {min_age}, המטופל בן {pt_age}")
+    if pt_age and max_age is not None and pt_age > max_age:
+        fails.append(f"גיל: מקסימום {max_age}, המטופל בן {pt_age}")
+
     # 1. סטטוס מחלה
     trial_ds = e.get("disease_status", [])
     if trial_ds:
@@ -669,6 +678,19 @@ def _match_trial(trial: dict, patient: dict):
         if any(d in drug_ref for d in CART_DRUGS):
             fails.append("קיבל CAR-T בעבר — אסור במחקר זה")
 
+    # 6b. תרופות מדירות ספציפיות
+    excluded_drugs = e.get("excluded_prior_drugs", [])
+    if excluded_drugs:
+        patient_drugs_lower = {d.lower(): d for d in drug_ref}
+        for excl in excluded_drugs:
+            class_drugs = _drugs_for_class(excl)
+            if class_drugs:
+                if any(d in drug_ref for d in class_drugs):
+                    fails.append(f"קיבל תרופה מקבוצת {excl} — תרופה מדירה במחקר זה")
+            elif excl.lower() in patient_drugs_lower:
+                orig = patient_drugs_lower[excl.lower()]
+                fails.append(f"קיבל {orig} — תרופה מדירה במחקר זה")
+
     # 7. ערכי מעבדה
     checks = [
         ("min_hb",  "hb",  "Hb",      "g/dL",    "<"),
@@ -708,6 +730,8 @@ def _match_trial(trial: dict, patient: dict):
         fails.append("ממאירות פעילה — מצב מדיר")
     if e.get("excluded_if_active_autoimmune") and any("אוטואימונית" in c for c in act_cond):
         fails.append("מחלה אוטואימונית פעילה — מצב מדיר")
+    if e.get("excluded_if_recent_cardiac_event") and any("לב איסכמי" in c for c in act_cond):
+        fails.append("אירוע לב איסכמי ב-6 חודשים האחרונים — מצב מדיר")
 
     # 9. מועמדות להשתלה עצמית
     asct_candidate = patient.get("asct_candidate", "")
@@ -911,6 +935,7 @@ def _compute_refractory(entries):
 # ── ערכים ראשוניים ───────────────────────────────────────────────────────────
 lines_of_therapy = []
 drug_ref_status  = {}
+valid_drugs      = []
 
 # ── ממשק הזנת תרופות (מדורג) ─────────────────────────────────────────────────
 if show_drug_section:
