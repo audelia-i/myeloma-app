@@ -495,6 +495,10 @@ if kappa_flc and lambda_flc and flc_ratio:
     involved_flc = max(kappa_flc, lambda_flc)
     if involved_flc >= 100 and not (0.26 <= flc_ratio <= 1.65):
         measurable = True
+if kappa_flc and not lambda_flc and kappa_flc >= 100:
+    measurable = True
+if lambda_flc and not kappa_flc and lambda_flc >= 100:
+    measurable = True
 
 if m_protein_serum or kappa_flc or lambda_flc:
     status = "✅ מחלה מדידה" if measurable else "⚠️ מחלה לא מדידה לפי הנתונים שהוזנו"
@@ -681,7 +685,15 @@ def _match_trial(trial: dict, patient: dict):
         if any(d in drug_ref for d in CART_DRUGS):
             fails.append("קיבל CAR-T בעבר — אסור במחקר זה")
 
-    # 6b. תרופות מדירות ספציפיות
+    # 6b. תרופות נדרשות ספציפיות
+    required_drugs = e.get("required_prior_drugs", [])
+    if required_drugs:
+        patient_drugs_lower = {d.lower(): d for d in drug_ref}
+        for req in required_drugs:
+            if req.lower() not in patient_drugs_lower:
+                fails.append(f"נדרש טיפול קודם ב-{req} — המטופל לא קיבל תרופה זו")
+
+    # 6c. תרופות מדירות ספציפיות
     excluded_drugs = e.get("excluded_prior_drugs", [])
     if excluded_drugs:
         patient_drugs_lower = {d.lower(): d for d in drug_ref}
@@ -1147,7 +1159,7 @@ if submit:
     else:
         # סינון מחקרים בסיסי — חובה לעמוד בכל שלושת התנאים
         def _is_eligible_trial(t: dict) -> tuple[bool, str]:
-            if t.get("recruiting_status") not in (None, "RECRUITING"):
+            if t.get("recruiting_status") != "RECRUITING":
                 return False, "המחקר אינו מגייס כרגע"
             if t.get("is_interventional") is False:
                 return False, "מחקר תצפיתי — לא רלוונטי"
